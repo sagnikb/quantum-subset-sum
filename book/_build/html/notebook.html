@@ -1,0 +1,927 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solution using Grover search &#8212; Quantum subset sum</title>
+    
+  <link href="_static/css/theme.css" rel="stylesheet">
+  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Quantum subset-sum" href="intro.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Quantum subset sum</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="intro.html">
+   Quantum subset-sum
+  </a>
+ </li>
+</ul>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Solution using Grover search
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav> <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="topbar container-xl fixed-top">
+    <div class="topbar-contents row">
+        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
+        <div class="col pl-md-4 topbar-main">
+            
+            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            
+            
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/notebook.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+</div>
+
+            <!-- Source interaction buttons -->
+
+            <!-- Full screen (wrap in <a> to have style consistency -->
+
+<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+        title="Fullscreen mode"><i
+            class="fas fa-expand"></i></button></a>
+
+            <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/notebook.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        
+    </div>
+</div>
+
+        </div>
+
+        <!-- Table of contents -->
+        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
+            
+            <div class="tocsection onthispage pt-5 pb-3">
+                <i class="fas fa-list"></i> Contents
+            </div>
+            <nav id="bd-toc-nav" aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-problem">
+   The problem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#basic-idea">
+   Basic idea
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#first-pass-at-the-oracle">
+   First Pass at the Oracle
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#oracle-version-2">
+   Oracle, version 2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#increasing-the-success-probability-using-grover-search">
+   Increasing the success probability using Grover search
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#creating-the-grover-oracle">
+     Creating the Grover oracle
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-inversion-around-mean-circuit">
+     The inversion around mean circuit
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#possible-improvements">
+   Possible improvements
+  </a>
+ </li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Solution using Grover search</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-problem">
+   The problem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#basic-idea">
+   Basic idea
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#first-pass-at-the-oracle">
+   First Pass at the Oracle
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#oracle-version-2">
+   Oracle, version 2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#increasing-the-success-probability-using-grover-search">
+   Increasing the success probability using Grover search
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#creating-the-grover-oracle">
+     Creating the Grover oracle
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-inversion-around-mean-circuit">
+     The inversion around mean circuit
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#possible-improvements">
+   Possible improvements
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+              <div>
+                
+  <div class="section" id="solution-using-grover-search">
+<h1>Solution using Grover search<a class="headerlink" href="#solution-using-grover-search" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-problem">
+<h2>The problem<a class="headerlink" href="#the-problem" title="Permalink to this headline">¶</a></h2>
+<p>Design a quantum circuit that finds the subsets of <span class="math notranslate nohighlight">\([5,7,8,9,1]\)</span> for which the elements add to <span class="math notranslate nohighlight">\(16\)</span>.</p>
+</div>
+<div class="section" id="basic-idea">
+<h2>Basic idea<a class="headerlink" href="#basic-idea" title="Permalink to this headline">¶</a></h2>
+<p><strong>Note:</strong> I spend some time here going over my thought process as I approached this problem, and the first thing I thought of was not good. <strong>To jump straight to the solution that worked, go <a class="reference external" href="#another_cell">here</a></strong>.</p>
+<p>I can use one-hot encoding for the subsets, for example, the subset with the first and third elements can be represented as the vector <span class="math notranslate nohighlight">\(\ket{10100}\)</span>. I can generate a uniform superposition over all such vectors by a Hadamard transform on the state <span class="math notranslate nohighlight">\(\ket{00000}\)</span>. If I have an oracle that can compute the sum of a subset with such an encoding of the subset as input, an oracle call can write the sum of elements of the subset to a quantum register. I can then query this oracle with the uniform superposition over all such encodings and measure the ‘answer’ register. If the answer register reads <span class="math notranslate nohighlight">\(16\)</span>, then the qubits encoding the subset will have a possible subset that adds to <span class="math notranslate nohighlight">\(16\)</span>.</p>
+<p>We start by importing the required libraries and tools.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="c1"># importing Qiskit</span>
+<span class="kn">import</span> <span class="nn">qiskit</span>
+<span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">QuantumCircuit</span><span class="p">,</span> <span class="n">transpile</span><span class="p">,</span> <span class="n">assemble</span><span class="p">,</span> <span class="n">Aer</span>
+
+<span class="c1"># import basic plot tools</span>
+<span class="kn">from</span> <span class="nn">qiskit.visualization</span> <span class="kn">import</span> <span class="n">plot_histogram</span>
+<span class="kn">from</span> <span class="nn">qiskit.tools.visualization</span> <span class="kn">import</span> <span class="n">circuit_drawer</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We set two global variables. <span class="math notranslate nohighlight">\(N\)</span> is the size of the input list and <span class="math notranslate nohighlight">\(B\)</span> is the number of qubits required to encode each element of the list. In this case, even though the largest number in the list is <span class="math notranslate nohighlight">\(9\)</span> which can be encoded using <span class="math notranslate nohighlight">\(4\)</span> qubits, since I eventually want to compute the subset sums, I choose to represent the elements using <span class="math notranslate nohighlight">\(B = 5\)</span> qubits. The extra qubit will contain any carry-overs.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">LIST</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">LIST</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="first-pass-at-the-oracle">
+<h2>First Pass at the Oracle<a class="headerlink" href="#first-pass-at-the-oracle" title="Permalink to this headline">¶</a></h2>
+<p>The oracle would contain <span class="math notranslate nohighlight">\(N\)</span> query qubits and <span class="math notranslate nohighlight">\(N \times B + B\)</span> ancilla qubits. The first <span class="math notranslate nohighlight">\(B \times N\)</span> ancilla qubits would be memory qubits, each set of <span class="math notranslate nohighlight">\(B\)</span> qubits initialized, using <span class="math notranslate nohighlight">\(X\)</span> gates, to represent an encoding of the numbers in the list. The sum of the elements of the queried subset would be stored in the last <span class="math notranslate nohighlight">\(B\)</span> ancilla qubits. The sum is computed using controlled Draper QFT Adders, where the uncontrolled version was from the Qiskit Circuit Library. Specifically, the adders are always between one of the <span class="math notranslate nohighlight">\(N\)</span> sets of memory qubits and the sum qubits. There are <span class="math notranslate nohighlight">\(N\)</span> adders, each controlled using one wire of the query qubits. If a control qubit is one, the circuit adds the corresponding number to the sum qubits. For now, I have kept <span class="math notranslate nohighlight">\(N+B\)</span> classical bits to store the result of measuring the query qubits and the sum qubits.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qiskit.circuit.library</span> <span class="kn">import</span> <span class="n">DraperQFTAdder</span>
+<span class="n">controlled_adder</span> <span class="o">=</span> <span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">control</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">N</span><span class="o">*</span><span class="n">B</span> <span class="o">+</span> <span class="n">B</span><span class="p">,</span> <span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">([</span><span class="n">i</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">x</span><span class="p">([</span><span class="mi">5</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">x</span><span class="p">([</span><span class="mi">7</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">x</span><span class="p">([</span><span class="mi">10</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">x</span><span class="p">([</span><span class="mi">11</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">x</span><span class="p">([</span><span class="mi">12</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">x</span><span class="p">([</span><span class="mi">13</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">x</span><span class="p">([</span><span class="mi">18</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">x</span><span class="p">([</span><span class="mi">20</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">x</span><span class="p">([</span><span class="mi">23</span><span class="p">])</span>
+
+<span class="n">qc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">controlled_adder</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">34</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">controlled_adder</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">34</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">controlled_adder</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">17</span><span class="p">,</span><span class="mi">18</span><span class="p">,</span><span class="mi">19</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">34</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">controlled_adder</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">21</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">34</span><span class="p">])</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">controlled_adder</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">27</span><span class="p">,</span><span class="mi">28</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">34</span><span class="p">])</span>
+
+<span class="n">qc</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">34</span><span class="p">],</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="p">))</span>
+
+<span class="n">circuit_drawer</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;mpl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/notebook_7_0.png" src="_images/notebook_7_0.png" />
+</div>
+</div>
+<p>… which seems to work fine, until I get to the next step: compiling and running the circuit.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use Aer&#39;s qasm_simulator</span>
+<span class="n">backend_sim</span> <span class="o">=</span> <span class="n">Aer</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s1">&#39;qasm_simulator&#39;</span><span class="p">)</span>
+
+<span class="c1"># Execute the circuit on the qasm simulator.</span>
+<span class="n">job_sim</span> <span class="o">=</span> <span class="n">backend_sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">transpile</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">backend_sim</span><span class="p">),</span> <span class="n">shots</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Grab the results from the job.</span>
+<span class="n">result_sim</span> <span class="o">=</span> <span class="n">job_sim</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Simulation failed and returned the following error message:
+ERROR:  [Experiment 0] Insufficient memory to run circuit circuit-188 using the statevector simulator.
+</pre></div>
+</div>
+</div>
+</div>
+<p>😫</p>
+<p>Of course, that’s hardly surprising. I just attempted to create a circuit with <span class="math notranslate nohighlight">\(35\)</span> qubits. That’s <span class="math notranslate nohighlight">\(34359738368\)</span> possible states. Even if the coefficient of each state could be represented by just a single bit, that’s over 4GB of memory! Clearly this is not the right way to create an oracle.</p>
+</div>
+<div class="section" id="oracle-version-2">
+<h2>Oracle, version 2<a class="headerlink" href="#oracle-version-2" title="Permalink to this headline">¶</a></h2>
+<p><a id='another_cell'></a></p>
+<p>This time, the oracle will contain just <span class="math notranslate nohighlight">\(N\)</span> query qubits and <span class="math notranslate nohighlight">\(B + B\)</span> ancilla qubits. Using the query qubits as control, I can write the elements of the list to the first <span class="math notranslate nohighlight">\(B\)</span> ancilla qubits. Then I can use a Draper adder between the first and second sets of <span class="math notranslate nohighlight">\(B\)</span> ancilla qubits - this will add the number in the first <span class="math notranslate nohighlight">\(B\)</span> ancilla qubits to the second <span class="math notranslate nohighlight">\(B\)</span> ancilla qubits. I then restore the first <span class="math notranslate nohighlight">\(B\)</span> qubits to the <span class="math notranslate nohighlight">\(\ket{00000}\)</span> state by applying the same controlled gates again, and proceed. Eventually, I get the subset sum in the last <span class="math notranslate nohighlight">\(B\)</span> ancilla qubits. The oracle upto this point is as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">oracle</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">B</span> <span class="o">+</span> <span class="n">B</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">circuit_drawer</span><span class="p">(</span><span class="n">oracle</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;mpl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/notebook_12_0.png" src="_images/notebook_12_0.png" />
+</div>
+</div>
+<p>Before proceeding, let’s test the oracle to ensure that it is actually working as intended. The test circuit creates a uniform superposition of queries, queries the oracle, measures the query and sum qubits and returns the result.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_circ</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="o">+</span><span class="n">B</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">test_circ</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="n">test_circ</span> <span class="o">=</span> <span class="n">test_circ</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="n">oracle</span><span class="p">)</span>
+<span class="n">test_circ</span><span class="o">.</span><span class="n">measure</span><span class="p">((</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="o">+</span><span class="n">B</span><span class="p">))),</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="p">))</span>
+<span class="n">circuit_drawer</span><span class="p">(</span><span class="n">test_circ</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;mpl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/notebook_14_0.png" src="_images/notebook_14_0.png" />
+</div>
+</div>
+<p>I test the result so far as follows: from each sample from the circuit, I compute which subset was queried and what the result was, and match it with the expected result of the sum. If the computed result and the expected result match for each sample, we are good!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use Aer&#39;s qasm_simulator</span>
+<span class="n">backend_sim</span> <span class="o">=</span> <span class="n">Aer</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s1">&#39;qasm_simulator&#39;</span><span class="p">)</span>
+
+<span class="c1"># Execute the circuit on the qasm simulator.</span>
+<span class="n">job_sim</span> <span class="o">=</span> <span class="n">backend_sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">transpile</span><span class="p">(</span><span class="n">test_circ</span><span class="p">,</span> <span class="n">backend_sim</span><span class="p">),</span> <span class="n">shots</span><span class="o">=</span><span class="mi">4096</span><span class="p">)</span>
+
+<span class="c1"># Grab the results from the job.</span>
+<span class="n">result_sim</span> <span class="o">=</span> <span class="n">job_sim</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">result_sim</span><span class="o">.</span><span class="n">get_counts</span><span class="p">(</span><span class="n">test_circ</span><span class="p">)</span>
+
+<span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">comp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">LIST</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+    <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">item</span><span class="p">[:</span><span class="mi">5</span><span class="p">]):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">num</span> <span class="o">+=</span> <span class="n">c</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">B</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="nb">id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num</span> <span class="o">!=</span> <span class="n">comp</span><span class="p">:</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">break</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">flag</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not working :(&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Working!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Working!
+</pre></div>
+</div>
+</div>
+</div>
+<p>I plot the outputs. Clearly, no one input dominates the rest. This is of course to be expected since we queried in equal superposition.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_histogram</span><span class="p">(</span><span class="n">result_sim</span><span class="o">.</span><span class="n">get_counts</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/notebook_18_0.png" src="_images/notebook_18_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="increasing-the-success-probability-using-grover-search">
+<h2>Increasing the success probability using Grover search<a class="headerlink" href="#increasing-the-success-probability-using-grover-search" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="creating-the-grover-oracle">
+<h3>Creating the Grover oracle<a class="headerlink" href="#creating-the-grover-oracle" title="Permalink to this headline">¶</a></h3>
+<p>We have created some oracle, but right now if there are <span class="math notranslate nohighlight">\(m\)</span> subsets that add up to <span class="math notranslate nohighlight">\(16\)</span> (in this case <span class="math notranslate nohighlight">\(m=2\)</span>), the algorithm has only an <span class="math notranslate nohighlight">\(m/2^N\)</span> chance of getting the correct answer. That is not good enough.</p>
+<p>The way I increase this is by using Grover search. Define a function <span class="math notranslate nohighlight">\(f\)</span> such that takes (the encoding of) a subset as input, and returns <span class="math notranslate nohighlight">\(1\)</span> if the sum of that subset is <span class="math notranslate nohighlight">\(16\)</span> and zero otherwise. I will now construct an oracle <span class="math notranslate nohighlight">\(\mathcal{O}_f\)</span> that has the following form:</p>
+<p>\begin{align*}
+\mathcal{O}_f \ket{x} \otimes \ket{0}^m = (-1)^{f(x)} \ket{x} \otimes \ket{0}^m
+\end{align*}</p>
+<p>I will take <span class="math notranslate nohighlight">\(m = 2B\)</span>. To do this, I start with the oracle I defined above and build on top of it.</p>
+<p>I first test if the sum qubits encode the number <span class="math notranslate nohighlight">\(16\)</span>. In binary, <span class="math notranslate nohighlight">\(16\)</span> is <span class="math notranslate nohighlight">\(10000\)</span>, and so a classical Boolean formula to check this would be <span class="math notranslate nohighlight">\((\neg a_0) \land (\neg a_1) \land (\neg a_2) \land (\neg a_3) \land a_4\)</span>. Inspired by this, I check this quantumly by applying an <span class="math notranslate nohighlight">\(X\)</span> gate to the qubits representing <span class="math notranslate nohighlight">\(a_0\)</span>, <span class="math notranslate nohighlight">\(a_1\)</span>, <span class="math notranslate nohighlight">\(a_2\)</span> and <span class="math notranslate nohighlight">\(a_3\)</span>, and take a multi-controlled <span class="math notranslate nohighlight">\(X\)</span>-gate onto one of the other ancilla qubits.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">mcx</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">],</span> <span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;qiskit.circuit.instructionset.InstructionSet at 0x7f8da6f12240&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>To now get the required phase shift, I do a controlled phase shift from the ancilla qubit I just used to the one of the sum qubits. By construction, I know that this ancilla qubit is <span class="math notranslate nohighlight">\(\ket{1}\)</span> if and only if <em>all</em> of the sum qubits are <span class="math notranslate nohighlight">\(\ket{1}\)</span>, and so this will add a phase if and only if the sum qubits encode <span class="math notranslate nohighlight">\(16\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">oracle</span><span class="o">.</span><span class="n">cp</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;qiskit.circuit.instructionset.InstructionSet at 0x7f8da6f05680&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now, I need to uncompute everything in the ancilla qubits to get it into the form I want. This is not hard, since most of the gates are self-inverses. The uncomputation is accomplished in the following.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">oracle</span><span class="o">.</span><span class="n">mcx</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">],</span> <span class="mi">9</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">oracle</span><span class="o">.</span><span class="n">barrier</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;qiskit.circuit.instructionset.InstructionSet at 0x7f8da7fcf7c0&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>The full circuit is as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">circuit_drawer</span><span class="p">(</span><span class="n">oracle</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;mpl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/notebook_27_0.png" src="_images/notebook_27_0.png" />
+</div>
+</div>
+<p>I will now put the entire oracle into a function. It takes two integer parameters, <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(b\)</span>, which play the same roles as <span class="math notranslate nohighlight">\(N\)</span> and <span class="math notranslate nohighlight">\(B\)</span>. I also turned the oracle into a composite gate that I can then stick into other circuits.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">oracle</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+    <span class="n">oracle</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">mcx</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">],</span> <span class="mi">9</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cp</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">mcx</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">],</span> <span class="mi">9</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DraperQFTAdder</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">inverse</span><span class="p">(),</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">14</span><span class="p">])</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">oracle</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="c1"># oracle.barrier()</span>
+    <span class="k">return</span> <span class="n">oracle</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="n">transpile</span><span class="p">(</span><span class="n">oracle</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">Aer</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s1">&#39;statevector_simulator&#39;</span><span class="p">))</span>
+<span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">to_gate</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Oracle&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let me test this oracle to see if it is functioning as required. To do this, I use <span class="math notranslate nohighlight">\(X\)</span> gates to control what is being queried, and use the <code class="docutils literal notranslate"><span class="pre">statevector_simulator</span></code> to see the output state vector. I first check with the subset <span class="math notranslate nohighlight">\([7,9]\)</span>, encoded as <span class="math notranslate nohighlight">\(01010\)</span>, that I know sums to <span class="math notranslate nohighlight">\(16\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">circ</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="o">+</span><span class="n">B</span><span class="p">)</span>
+<span class="n">circ</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">circ</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">circ</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="o">+</span><span class="n">B</span><span class="p">))</span>
+
+<span class="n">backend</span> <span class="o">=</span> <span class="n">Aer</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s1">&#39;statevector_simulator&#39;</span><span class="p">)</span>
+<span class="n">circ</span> <span class="o">=</span> <span class="n">transpile</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+<span class="n">job</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+<span class="n">outputstate</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_statevector</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">outputstate</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;000000000001010&#39;: (-1+0j)}
+</pre></div>
+</div>
+</div>
+</div>
+<p>We got the phase of <span class="math notranslate nohighlight">\(-1\)</span>, so that works! Now I check with a subset, let’s say <span class="math notranslate nohighlight">\([5,7,8]\)</span>, encoded as <span class="math notranslate nohighlight">\(11100\)</span>, that does <em>not</em> sum to <span class="math notranslate nohighlight">\(16\)</span>, and see the result.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">circ</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="o">+</span><span class="n">B</span><span class="p">)</span>
+<span class="n">circ</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">circ</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">circ</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">circ</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="n">B</span><span class="o">+</span><span class="n">B</span><span class="p">))</span>
+
+<span class="n">backend</span> <span class="o">=</span> <span class="n">Aer</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s1">&#39;statevector_simulator&#39;</span><span class="p">)</span>
+<span class="n">circ</span> <span class="o">=</span> <span class="n">transpile</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+<span class="n">job</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+<span class="n">outputstate</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_statevector</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">outputstate</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;000000000000111&#39;: (1-0j)}
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here there’s no phase, so that also works! We can check similarly with other subsets. Clearly if it works for these basis states, it also works under superposition.</p>
+</div>
+<div class="section" id="the-inversion-around-mean-circuit">
+<h3>The inversion around mean circuit<a class="headerlink" href="#the-inversion-around-mean-circuit" title="Permalink to this headline">¶</a></h3>
+<p>The other ingredient that goes into the Grover iteration is the inversion around mean circuit, the key ingredient of which is the conditional phase-shift circuit <span class="math notranslate nohighlight">\(\mathcal{O}_{\phi}\)</span> that has the following action:</p>
+<p>\begin{align*}
+\mathcal{O}_{\phi} \ket{x}=
+\begin{cases}
+\ket{x} &amp; \text{if } x = 0,\
+- \ket{x} &amp; \text{if } x \neq 0.
+\end{cases}
+\end{align*}
+This is a standard circuit that can be implemented as follows using <span class="math notranslate nohighlight">\(X\)</span> gates, <span class="math notranslate nohighlight">\(H\)</span> gates and a multicontrolled <span class="math notranslate nohighlight">\(X\)</span> gate. I also turned the oracle into a composite gate that I can then stick into other circuits.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">conditional_ps</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+    <span class="n">circ</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">circ</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="c1"># circ.barrier()</span>
+    <span class="n">circ</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">circ</span><span class="o">.</span><span class="n">mcx</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)],</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">circ</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># circ.barrier()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">circ</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">circ</span>
+<span class="n">circ</span> <span class="o">=</span> <span class="n">conditional_ps</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">cp</span> <span class="o">=</span> <span class="n">circ</span><span class="o">.</span><span class="n">to_instruction</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;cond-p-shift&#39;</span><span class="p">)</span>
+<span class="n">circuit_drawer</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;mpl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/notebook_36_0.png" src="_images/notebook_36_0.png" />
+</div>
+</div>
+<p>Using this, the inversion around mean circuit can be defined as follows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inv_around_mean</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantumCircuit</span><span class="p">:</span>
+    <span class="n">circ</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">cp</span> <span class="o">=</span> <span class="n">conditional_ps</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">to_gate</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;cond-p-shift&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">circ</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="n">circ</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">circ</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">circ</span>
+
+<span class="n">circ</span> <span class="o">=</span> <span class="n">inv_around_mean</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">circ</span><span class="o">.</span><span class="n">to_gate</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;inv-mean&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>With all the pieces in place, we simply run the Grover iteration. Since there are <span class="math notranslate nohighlight">\(2\)</span> marked items and <span class="math notranslate nohighlight">\(32\)</span> total possibilities, approximately <span class="math notranslate nohighlight">\(\sqrt{32/2} = 4\)</span> iterations will suffice. In my testing, I found that <span class="math notranslate nohighlight">\(3\)</span> iterations gave the best answer.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">main_circuit</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">main_circuit</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">main_circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">15</span><span class="p">))</span>
+    <span class="n">main_circuit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">main_circuit</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">circuit_drawer</span><span class="p">(</span><span class="n">main_circuit</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;mpl&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/notebook_40_0.png" src="_images/notebook_40_0.png" />
+</div>
+</div>
+<p>We now test this circuit by running it and sampling the first <span class="math notranslate nohighlight">\(N\)</span> qubits.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">backend_sim</span> <span class="o">=</span> <span class="n">Aer</span><span class="o">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s1">&#39;qasm_simulator&#39;</span><span class="p">)</span>
+<span class="n">job_sim</span> <span class="o">=</span> <span class="n">backend_sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">transpile</span><span class="p">(</span><span class="n">main_circuit</span><span class="p">,</span> <span class="n">backend_sim</span><span class="p">),</span> <span class="n">shots</span><span class="o">=</span><span class="mi">4096</span><span class="p">)</span>
+<span class="n">result_sim</span> <span class="o">=</span> <span class="n">job_sim</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">result_sim</span><span class="o">.</span><span class="n">get_counts</span><span class="p">(</span><span class="n">main_circuit</span><span class="p">)</span>
+<span class="n">plot_histogram</span><span class="p">(</span><span class="n">result_sim</span><span class="o">.</span><span class="n">get_counts</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/notebook_42_0.png" src="_images/notebook_42_0.png" />
+</div>
+</div>
+<p>With some run-to-run variance, the success probability is now around <span class="math notranslate nohighlight">\(96\%\)</span>!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">measured_str</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">)</span>
+<span class="n">measured_str</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;10110&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note the way indexing in Qiskit works. In our encoding, the subset indicated is denoted by <span class="math notranslate nohighlight">\(01101\)</span> and is the subset <span class="math notranslate nohighlight">\([7,8,1]\)</span>. The subset <span class="math notranslate nohighlight">\([7,9]\)</span> is the other highly probable result.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">((</span><span class="n">counts</span><span class="p">[</span><span class="s1">&#39;10110&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">counts</span><span class="p">[</span><span class="s1">&#39;01010&#39;</span><span class="p">])</span><span class="o">/</span><span class="mi">4096</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9619140625
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="possible-improvements">
+<h2>Possible improvements<a class="headerlink" href="#possible-improvements" title="Permalink to this headline">¶</a></h2>
+<ol class="simple">
+<li><p><em>A priori</em> we don’t know how many solutions there are to the search problem, and therefore we don’t know how many times we need to run the Grover iterations. However, this is not hard to fix because the quantum counting algorithm does exactly this and can be run before running the above circuit to estimate the number of solutions.</p></li>
+<li><p>I have used ten ancillary qubits to create the oracle, which, even though less than the 35 I needed in the first attempt, still seems a little excessive. An interesting problem is to try and do it using less qubits, though that might have the side effect of increasing the depth of the circuit.</p></li>
+<li><p>The depth of each Grover iteration is also very high, partly because of how I constructed the oracle. High depth circuits are difficult to implement, so it would be nice to reduce the depth of the circuit (though algorithms such as these are not expected to run on near-term hardware anyway)</p></li>
+<li><p>I have currently hard-coded the circuits based on the specific example that we had to calculate. The way I have made the circuits, however, this can be easily fixed.</p></li>
+</ol>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'> 
+    <a class='left-prev' id="prev-link" href="intro.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Quantum subset-sum</p>
+        </div>
+    </a>
+</div>
+            
+        </div>
+    </div>
+    <footer class="footer">
+  <p>
+    
+      By Sagnik Bhattacharya<br/>
+    
+        &copy; Copyright 2021.<br/>
+  </p>
+</footer>
+</main>
+
+
+      </div>
+    </div>
+  
+  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+
+  </body>
+</html>
