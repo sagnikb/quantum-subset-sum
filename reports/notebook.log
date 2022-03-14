@@ -1,0 +1,75 @@
+Traceback (most recent call last):
+  File "/home/sagnikb/miniconda3/envs/myenv/lib/python3.9/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
+    executenb(
+  File "/home/sagnikb/miniconda3/envs/myenv/lib/python3.9/site-packages/nbclient/client.py", line 1204, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/home/sagnikb/miniconda3/envs/myenv/lib/python3.9/site-packages/nbclient/util.py", line 84, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/home/sagnikb/miniconda3/envs/myenv/lib/python3.9/site-packages/nbclient/util.py", line 62, in just_run
+    return loop.run_until_complete(coro)
+  File "/home/sagnikb/miniconda3/envs/myenv/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/home/sagnikb/miniconda3/envs/myenv/lib/python3.9/site-packages/nbclient/client.py", line 663, in async_execute
+    await self.async_execute_cell(
+  File "/home/sagnikb/miniconda3/envs/myenv/lib/python3.9/site-packages/nbclient/client.py", line 965, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/sagnikb/miniconda3/envs/myenv/lib/python3.9/site-packages/nbclient/client.py", line 862, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+qc = QuantumCircuit(N + N*B + B, N+B)
+for i in range(N):
+    qc.h([i])
+qc.x([5])
+qc.x([7])
+qc.x([10])
+qc.x([11])
+qc.x([12])
+qc.x([13])
+qc.x([18])
+qc.x([20])
+qc.x([23])
+
+qc.append(controlled_adder, [0,5,6,7,8,9,30,31,32,33,34])
+qc.append(controlled_adder, [1,10,11,12,13,14,30,31,32,33,34])
+qc.append(controlled_adder, [2,15,16,17,18,19,30,31,32,33,34])
+qc.append(controlled_adder, [3,20,21,22,23,24,30,31,32,33,34])
+qc.append(controlled_adder, [4,25,26,27,28,29,30,31,32,33,34])
+
+qc.barrier()
+qc.measure([0,1,2,3,4,30,31,32,33,34],range(N+B))
+
+circuit_drawer(qc, output='mpl')
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mMissingOptionalLibraryError[0m               Traceback (most recent call last)
+[0;32m/tmp/ipykernel_123/3925487549.py[0m in [0;36m<module>[0;34m[0m
+[1;32m     21[0m [0mqc[0m[0;34m.[0m[0mmeasure[0m[0;34m([0m[0;34m[[0m[0;36m0[0m[0;34m,[0m[0;36m1[0m[0;34m,[0m[0;36m2[0m[0;34m,[0m[0;36m3[0m[0;34m,[0m[0;36m4[0m[0;34m,[0m[0;36m30[0m[0;34m,[0m[0;36m31[0m[0;34m,[0m[0;36m32[0m[0;34m,[0m[0;36m33[0m[0;34m,[0m[0;36m34[0m[0;34m][0m[0;34m,[0m[0mrange[0m[0;34m([0m[0mN[0m[0;34m+[0m[0mB[0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[1;32m     22[0m [0;34m[0m[0m
+[0;32m---> 23[0;31m [0mcircuit_drawer[0m[0;34m([0m[0mqc[0m[0;34m,[0m [0moutput[0m[0;34m=[0m[0;34m'mpl'[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m
+[0;32m~/miniconda3/envs/myenv/lib/python3.9/site-packages/qiskit/visualization/circuit_visualization.py[0m in [0;36mcircuit_drawer[0;34m(circuit, scale, filename, style, output, interactive, plot_barriers, reverse_bits, justify, vertical_compression, idle_wires, with_layout, fold, ax, initial_state, cregbundle)[0m
+[1;32m    282[0m         )
+[1;32m    283[0m     [0;32melif[0m [0moutput[0m [0;34m==[0m [0;34m"mpl"[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;32m--> 284[0;31m         image = _matplotlib_circuit_drawer(
+[0m[1;32m    285[0m             [0mcircuit[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    286[0m             [0mscale[0m[0;34m=[0m[0mscale[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/miniconda3/envs/myenv/lib/python3.9/site-packages/qiskit/visualization/circuit_visualization.py[0m in [0;36m_matplotlib_circuit_drawer[0;34m(circuit, scale, filename, style, plot_barriers, reverse_bits, justify, idle_wires, with_layout, fold, ax, initial_state, cregbundle)[0m
+[1;32m    658[0m [0;34m[0m[0m
+[1;32m    659[0m     [0mglobal_phase[0m [0;34m=[0m [0mcircuit[0m[0;34m.[0m[0mglobal_phase[0m [0;32mif[0m [0mhasattr[0m[0;34m([0m[0mcircuit[0m[0;34m,[0m [0;34m"global_phase"[0m[0;34m)[0m [0;32melse[0m [0;32mNone[0m[0;34m[0m[0;34m[0m[0m
+[0;32m--> 660[0;31m     qcd = _matplotlib.MatplotlibDrawer(
+[0m[1;32m    661[0m         [0mqubits[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    662[0m         [0mclbits[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+
+[0;32m~/miniconda3/envs/myenv/lib/python3.9/site-packages/qiskit/visualization/matplotlib.py[0m in [0;36m__init__[0;34m(self, qubits, clbits, nodes, scale, style, reverse_bits, plot_barriers, layout, fold, ax, initial_state, cregbundle, global_phase, qregs, cregs, calibrations)[0m
+[1;32m     99[0m         [0mself[0m[0;34m.[0m[0m_plt_mod[0m [0;34m=[0m [0mplt[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    100[0m         [0;32mif[0m [0;32mnot[0m [0mHAS_PYLATEX[0m[0;34m:[0m[0;34m[0m[0;34m[0m[0m
+[0;32m--> 101[0;31m             raise MissingOptionalLibraryError(
+[0m[1;32m    102[0m                 [0mlibname[0m[0;34m=[0m[0;34m"pylatexenc"[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+[1;32m    103[0m                 [0mname[0m[0;34m=[0m[0;34m"MatplotlibDrawer"[0m[0;34m,[0m[0;34m[0m[0;34m[0m[0m
+
+[0;31mMissingOptionalLibraryError[0m: "The 'pylatexenc' library is required to use 'MatplotlibDrawer'. You can install it with 'pip install pylatexenc'."
+MissingOptionalLibraryError: "The 'pylatexenc' library is required to use 'MatplotlibDrawer'. You can install it with 'pip install pylatexenc'."
+
